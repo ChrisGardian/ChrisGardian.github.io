@@ -1,0 +1,66 @@
+---
+import { site } from '../data/site';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const isDev = import.meta.env.DEV;
+// Les infos entre crochets [ ] sont à remplacer dans src/i18n/ui.ts
+// (elles restent masquées sur le site publié tant qu'elles ne sont pas remplies).
+const facts = [t(lang, 'contact.location'), t(lang, 'contact.languages'), t(lang, 'contact.availability')]
+  .filter((f) => isDev || !f.includes('['));
+---
+<section id="contact">
+  <div class="wrap">
+    <div class="contact">
+      <div>
+        <h2>{t(lang, 'contact.title')}</h2>
+        <p>{t(lang, 'contact.text')}</p>
+        <div class="facts">
+          {facts.map((f) => <span class:list={{ todo: f.includes('[') }}>{f}</span>)}
+        </div>
+      </div>
+      {site.email
+        ? (
+          <a class="mail" href={`mailto:${site.email}`} data-email={site.email}>
+            {site.email} <span class="copied" aria-live="polite">{t(lang, 'contact.copied')}</span>
+          </a>
+        )
+        : isDev && <span class="mail todo">email ({t(lang, 'todo')})</span>}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Clic sur l'email : copie l'adresse en plus d'ouvrir le client mail.
+  document.querySelectorAll<HTMLAnchorElement>('a.mail[data-email]').forEach((a) => {
+    a.addEventListener('click', () => {
+      navigator.clipboard?.writeText(a.dataset.email ?? '').then(() => {
+        const tip = a.querySelector('.copied');
+        tip?.classList.add('show');
+        setTimeout(() => tip?.classList.remove('show'), 1400);
+      }).catch(() => {});
+    });
+  });
+</script>
+
+<style>
+  .contact { border-top: 1px solid var(--line); padding-top: 56px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+  h2 { margin-bottom: 10px; }
+  p { color: var(--muted); max-width: 520px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 18px; font-size: 14.5px; color: var(--muted); }
+  .facts span::before { content: "● "; color: var(--accent); font-size: 9px; vertical-align: 2px; }
+  .facts .todo { color: var(--accent-2); }
+  .mail {
+    display: inline-flex; align-items: center; gap: 12px;
+    font: 600 clamp(20px, 3vw, 28px) var(--head); color: var(--text);
+    border-bottom: 2px solid var(--accent); padding-bottom: 4px; word-break: break-all;
+  }
+  a.mail:hover { color: var(--accent); }
+  .mail.todo { color: var(--accent-2); border-color: var(--accent-2); }
+  .copied { font: 500 12px var(--mono); color: var(--accent); opacity: 0; transition: opacity .2s; }
+  :global(.copied.show) { opacity: 1; }
+  @media (max-width: 860px) {
+    .contact { grid-template-columns: 1fr; }
+  }
+</style>

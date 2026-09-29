@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import YouTube from './YouTube.astro';
+import { localePath, t, type Lang } from '../i18n/ui';
+import { getProjects, slugOf, type Project } from '../lib/projects';
+
+interface Props { project: Project; lang: Lang }
+const { project, lang } = Astro.props;
+const d = project.data;
+const { Content } = await render(project);
+
+const all = await getProjects(lang);
+const i = all.findIndex((p) => p.id === project.id);
+const next = all[(i + 1) % all.length];
+const home = localePath(lang, '/');
+const isDev = import.meta.env.DEV;
+---
+<Base lang={lang} title={d.title} description={d.summary}>
+  <article class="wrap">
+    <a class="back" href={`${home === '/' ? '' : home}/#projets`}><Icon name="arrow-left" />{t(lang, 'project.back')}</a>
+
+    <header class="head">
+      {d.draft && <span class="draft">{t(lang, 'projects.draft')}</span>}
+      {d.label && <span class="label">{d.label}</span>}
+      <h1>{d.title}</h1>
+      <p class="summary">{d.summary}</p>
+      <div class="chips">{d.tags.map((tag) => <span class="chip">{tag}</span>)}</div>
+      {d.links.length > 0 && (
+        <div class="links">
+          {d.links.map((l) => (
+            <a class="btn" href={l.url} rel="noopener">
+              {l.url.includes('github.com') && <Icon name="github" />}{l.label}<Icon name="external" />
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <div class="cover">
+      <Image src={d.cover} alt={d.coverAlt} widths={[720, 1120, 1600]} sizes="(max-width: 1120px) 100vw, 1072px" loading="eager" />
+    </div>
+
+    <div class="layout">
+      <div class="prose">
+        {d.youtubeId
+          ? <YouTube id={d.youtubeId} title={d.title} playLabel={t(lang, 'project.videoPlay')} />
+          : isDev && <div class="video-todo">{t(lang, 'project.videoTodo')}</div>}
+        <Content />
+      </div>
+
+      <aside>
+        {d.stats && (
+          <div class="stats">
+            {d.stats.map((s) => <div>{s.value}<small>{s.label}</small></div>)}
+          </div>
+        )}
+        {d.facts.length > 0 && (
+          <dl>
+            {d.facts.map((f) => (<><dt>{f.label}</dt><dd>{f.value}</dd></>))}
+          </dl>
+        )}
+      </aside>
+    </div>
+
+    {d.gallery.length > 0 && (
+      <section class="shots">
+        <h2>{t(lang, 'project.gallery')}</h2>
+        <div class="shot-grid">
+          {d.gallery.map((g) => (
+            <figure>
+              <a href={g.src.src} target="_blank" rel="noopener">
+                <Image src={g.src} alt={g.alt} widths={[560, 900, 1400]} sizes="(max-width: 860px) 100vw, 530px" />
+              </a>
+              <figcaption>{g.alt}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {next && next.id !== project.id && (
+      <a class="next" href={localePath(lang, `/projects/${slugOf(next)}/`)}>
+        <span class="label">{t(lang, 'project.next')}</span>
+        <span class="next-title">{next.data.title} →</span>
+      </a>
+    )}
+  </article>
+</Base>
+
+<style>
+  article { padding-top: 40px; }
+  .back { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14.5px; }
+  .back:hover { color: var(--text); }
+  .back :global(svg) { width: 16px; height: 16px; }
+
+  .head { margin: 36px 0 32px; max-width: 760px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  h1 { font: 700 clamp(36px, 6vw, 56px)/1.05 var(--head); letter-spacing: -1px; }
+  .summary { color: var(--muted); font-size: 18px; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+  .links :global(svg:last-child) { width: 14px; height: 14px; opacity: .6; }
+  .draft { font: 500 12px var(--mono); color: #0c0e14; background: #ffd166; padding: 3px 9px; border-radius: 6px; }
+
+  .cover { border-radius: 18px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 16/9; background: #0f121a; }
+  .cover :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 25%; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 56px; margin-top: 48px; align-items: start; }
+  aside { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 24px; }
+  .stats { display: grid; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+  .stats div { font: 600 26px var(--head); color: var(--accent); line-height: 1.1; }
+  .stats small { display: block; font: 400 13px var(--body); color: var(--muted); margin-top: 4px; }
+  dl { display: grid; gap: 4px; }
+  dt { font: 500 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-top: 12px; }
+  dt:first-child { margin-top: 0; }
+  dd { font-size: 15px; }
+
+  .video-todo {
+    padding: 18px; border: 1px dashed var(--accent-2); border-radius: var(--radius);
+    display: grid; place-items: center; color: var(--accent-2); font: 500 13px var(--mono); margin-bottom: 32px;
+  }
+  .prose :global(.yt) { margin-bottom: 36px; }
+  .prose { color: #c9cedb; font-size: 16.5px; line-height: 1.75; }
+  .prose :global(h2) { font: 600 24px var(--head); color: var(--text); margin: 40px 0 12px; letter-spacing: -.3px; }
+  .prose :global(h2:first-of-type) { margin-top: 0; }
+  .prose :global(h3) { font: 600 19px var(--head); color: var(--text); margin: 28px 0 8px; }
+  .prose :global(p) { margin: 0 0 16px; }
+  .prose :global(ul), .prose :global(ol) { margin: 0 0 16px 22px; }
+  .prose :global(li) { margin-bottom: 6px; }
+  .prose :global(li::marker) { color: var(--accent); }
+  .prose :global(strong) { color: var(--text); }
+  .prose :global(a) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .prose :global(code) { font: 14px var(--mono); background: var(--bg-2); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--text); }
+
+  .shots { padding: 64px 0 0; }
+  .shots h2 { font-size: 26px; margin-bottom: 20px; }
+  .shot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  figure { display: flex; flex-direction: column; gap: 8px; }
+  figure a { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 16/10; }
+  figure :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+  figure a:hover :global(img) { transform: scale(1.03); }
+  figcaption { color: var(--muted); font-size: 14px; }
+
+  .next {
+    display: flex; flex-direction: column; gap: 6px; margin-top: 72px; padding: 28px 0 0;
+    border-top: 1px solid var(--line);
+  }
+  .next-title { font: 600 26px var(--head); }
+  .next:hover .next-title { color: var(--accent); }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; gap: 32px; }
+    aside { position: static; order: -1; }
+    .cover { aspect-ratio: 16/10; }
+    .shot-grid { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,38 @@
+---
+// Lecteur YouTube léger : on affiche la miniature, et l'iframe (youtube-nocookie)
+// n'est chargée qu'au clic. La page reste rapide et YouTube ne dépose rien avant le clic.
+import Icon from './Icon.astro';
+
+interface Props { id: string; title: string; playLabel: string }
+const { id, title, playLabel } = Astro.props;
+---
+<div class="yt" data-id={id} data-title={title}>
+  <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" />
+  <button type="button" aria-label={`${playLabel} : ${title}`}><Icon name="play" /></button>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.yt[data-id]').forEach((el) => {
+    el.querySelector('button')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${el.dataset.id}?autoplay=1&rel=0`;
+      iframe.title = el.dataset.title ?? '';
+      iframe.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      el.replaceChildren(iframe);
+    });
+  });
+</script>
+
+<style>
+  .yt { position: relative; aspect-ratio: 16/9; border-radius: var(--radius); overflow: hidden; background: #000; border: 1px solid var(--line); }
+  .yt img { width: 100%; height: 100%; object-fit: cover; opacity: .85; }
+  .yt :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  button {
+    position: absolute; inset: 0; margin: auto; width: 76px; height: 76px; border-radius: 50%;
+    border: 0; background: var(--accent); color: #0c0e14; cursor: pointer;
+    display: grid; place-items: center; transition: transform .15s;
+  }
+  button:hover { transform: scale(1.06); }
+  button :global(svg) { width: 32px; height: 32px; margin-left: 4px; }
+</style>

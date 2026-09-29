@@ -1,0 +1,63 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const [first, ...rest] = site.name.split(' ');
+const cv = site.cv[lang];
+const isDev = import.meta.env.DEV;
+const stack = ['Unreal · C++', 'Unity · C#', 'DOTS / ECS', 'Python · Django', 'Blender'];
+---
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">{t(lang, 'hero.eyebrow')}</div>
+      <h1>{first}<br><span class="hl">{rest.join(' ')}</span></h1>
+      <div class="role" set:html={t(lang, 'hero.role')} />
+      <p class="pitch">{t(lang, 'hero.pitch')}</p>
+      <div class="stack chips">
+        {stack.map((s) => <span class="chip">{s}</span>)}
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="#projets">{t(lang, 'hero.cta')}</a>
+        {cv
+          ? <a class="btn" href={cv}><Icon name="download" />CV</a>
+          : isDev && <span class="btn todo"><Icon name="download" />CV ({t(lang, 'todo')})</span>}
+        <a class="btn" href={site.github}><Icon name="github" />GitHub</a>
+        {site.linkedin
+          ? <a class="btn" href={site.linkedin}><Icon name="linkedin" />LinkedIn</a>
+          : isDev && <span class="btn todo"><Icon name="linkedin" />LinkedIn ({t(lang, 'todo')})</span>}
+      </div>
+    </div>
+    <!-- Photo : remplacer ce bloc par <Image src={photo} alt="..." class="photo" /> -->
+    <div class="photo">{t(lang, 'hero.photo')}</div>
+  </div>
+</header>
+
+<style>
+  .hero { padding: 96px 0 72px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: center; }
+  .eyebrow { font: 500 13px var(--mono); color: var(--accent); margin-bottom: 18px; }
+  h1 { font: 700 clamp(44px, 7vw, 72px)/1.02 var(--head); letter-spacing: -1.5px; }
+  .hl { color: var(--accent); }
+  .role { font: 500 22px var(--head); color: var(--muted); margin: 18px 0; }
+  .role :global(b) { color: var(--text); font-weight: 600; }
+  .pitch { color: var(--muted); max-width: 520px; }
+  .stack { gap: 8px; margin: 22px 0 32px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .photo {
+    aspect-ratio: 4/5; border-radius: 20px; width: 100%; object-fit: cover;
+    background: linear-gradient(160deg, #1b2130, #10131b);
+    border: 1px solid var(--line);
+    display: grid; place-items: center;
+    box-shadow: 0 30px 80px -40px rgba(93,255,168,.45);
+    color: var(--muted); font: 500 13px var(--mono);
+  }
+  @media (max-width: 860px) {
+    .hero { padding: 56px 0 40px; }
+    .hero .wrap { grid-template-columns: 1fr; gap: 40px; }
+    .photo { max-width: 260px; }
+  }
+</style>

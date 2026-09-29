@@ -1,0 +1,26 @@
+# build
+dist/
+.astro/
+
+# dépendances
+node_modules/
+
+# logs
+npm-debug.log*
+
+# environnement
+.env
+.env.*
+
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.claude/
+
+# maquette de travail (pas publiée)
+mockup/
+
+# PlateCrafter : en attente de l'accord du client.
+# Retirer ces lignes (et passer draft: false) une fois l'accord obtenu.
+src/content/projects/*/platecrafter.md

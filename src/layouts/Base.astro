@@ -1,0 +1,106 @@
+---
+import '../styles/global.css';
+import { languages, localePath, switchLangPath, t, type Lang } from '../i18n/ui';
+import { site } from '../data/site';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+}
+const { lang, title, description } = Astro.props;
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} · Portfolio`;
+const desc = description ?? t(lang, 'meta.description');
+const home = localePath(lang, '/');
+const anchor = (id: string) => `${home === '/' ? '' : home}/#${id}`;
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isDev = import.meta.env.DEV;
+const cv = site.cv[lang];
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{pageTitle}</title>
+  <meta name="description" content={desc}>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)}>
+  {Object.keys(languages).map((l) => (
+    <link rel="alternate" hreflang={l} href={new URL(switchLangPath(pathname, l as Lang), Astro.site)}>
+  ))}
+  <meta property="og:title" content={pageTitle}>
+  <meta property="og:description" content={desc}>
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav class="topnav">
+    <div class="wrap">
+      <a href={home} class="logo">{site.name}<span>.</span></a>
+      <div class="links">
+        <a href={anchor('projets')} class="hide-m">{t(lang, 'nav.projects')}</a>
+        <a href={anchor('3d')} class="hide-m">{t(lang, 'nav.3d')}</a>
+        <a href={anchor('contact')}>{t(lang, 'nav.contact')}</a>
+        <div class="lang">
+          {Object.entries(languages).map(([code, label]) => (
+            code === lang
+              ? <span class="on" aria-current="true">{label}</span>
+              : <a href={switchLangPath(pathname, code as Lang)} hreflang={code} lang={code}>{label}</a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© {new Date().getFullYear()} {site.name}</span>
+      <div class="social">
+        <a href={site.github}>GitHub</a>
+        {site.linkedin ? <a href={site.linkedin}>LinkedIn</a> : isDev && <span class="todo">LinkedIn ({t(lang, 'todo')})</span>}
+        {cv ? <a href={cv}>CV</a> : isDev && <span class="todo">CV ({t(lang, 'todo')})</span>}
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+  .topnav {
+    position: sticky; top: 0; z-index: 10;
+    backdrop-filter: blur(10px);
+    background: rgba(12,14,20,.8);
+    border-bottom: 1px solid var(--line);
+  }
+  .topnav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+  .logo { font: 600 16px var(--head); white-space: nowrap; }
+  .logo span { color: var(--accent); }
+  .links { display: flex; gap: 28px; align-items: center; font: 500 15px var(--body); }
+  .links > a { color: var(--muted); transition: color .2s; }
+  .links > a:hover { color: var(--text); }
+  .lang { display: flex; gap: 2px; font: 500 12px var(--mono); }
+  .lang a, .lang span { color: var(--muted); padding: 6px 8px; border-radius: 6px; }
+  .lang a:hover { color: var(--text); }
+  .lang .on { color: var(--accent); background: rgba(93,255,168,.1); }
+
+  footer { padding: 64px 0 48px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .social { display: flex; gap: 18px; flex-wrap: wrap; }
+  .social a:hover { color: var(--text); }
+
+  @media (max-width: 860px) {
+    .links a.hide-m { display: none; }
+  }
+  @media (max-width: 480px) {
+    .links { gap: 14px; }
+    .logo { font-size: 15px; }
+    footer .wrap { flex-direction: column; align-items: flex-start; }
+  }
+</style>

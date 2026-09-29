@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import { t, type Lang } from '../i18n/ui';
+import cloud from '../assets/gallery/cloud.jpg';
+import donut from '../assets/gallery/donut.jpg';
+import blockout from '../assets/gallery/blockout.jpg';
+import laser from '../assets/gallery/laser.jpg';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+
+// Pour ajouter un rendu : déposer l'image dans src/assets/gallery/, l'importer ci-dessus
+// et l'ajouter ici. "size" : 'tall' (2 lignes), 'wide' (2 colonnes) ou rien.
+const items = [
+  { src: cloud, caption: { fr: 'Nuage volumétrique', en: 'Volumetric cloud' }, size: 'tall' },
+  { src: donut, caption: { fr: 'Donuts', en: 'Donuts' } },
+  { src: blockout, caption: { fr: 'Blockout de niveau', en: 'Level blockout' } },
+  { src: laser, caption: { fr: 'Piège laser', en: 'Laser trap' }, size: 'wide' },
+];
+---
+<section id="3d">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="num">02</span><h2>{t(lang, '3d.title')}</h2>
+      <p>{t(lang, '3d.subtitle')}</p>
+    </div>
+    <div class="gallery">
+      {items.map((it) => (
+        <figure class={it.size}>
+          <Image src={it.src} alt={it.caption[lang]} widths={[480, 800, 1200]} sizes="(max-width: 860px) 50vw, 560px" />
+          <figcaption>{it.caption[lang]}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .gallery { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-auto-rows: 200px; gap: 14px; }
+  figure { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+  figure.tall { grid-row: span 2; }
+  figure.wide { grid-column: span 2; }
+  figure :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+  figure:hover :global(img) { transform: scale(1.04); }
+  figcaption {
+    position: absolute; left: 10px; bottom: 10px; font: 500 12px var(--mono);
+    background: rgba(12,14,20,.8); padding: 4px 8px; border-radius: 6px; color: var(--muted);
+  }
+  @media (max-width: 860px) {
+    .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 150px; }
+    figure.tall { grid-row: auto; grid-column: span 2; }
+  }
+</style>
