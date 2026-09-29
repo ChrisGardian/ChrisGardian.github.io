@@ -11,7 +11,7 @@ const isDev = import.meta.env.DEV;
 const stack = ['Unreal · C++', 'Unity · C#', 'DOTS / ECS', 'Python · Django', 'Blender'];
 ---
 <header class="hero">
-  <div class="wrap">
+  <div class:list={['wrap', { solo: !isDev }]}>
     <div>
       <div class="eyebrow">{t(lang, 'hero.eyebrow')}</div>
       <h1>{first}<br><span class="hl">{rest.join(' ')}</span></h1>
@@ -31,14 +31,16 @@ const stack = ['Unreal · C++', 'Unity · C#', 'DOTS / ECS', 'Python · Django',
           : isDev && <span class="btn todo"><Icon name="linkedin" />LinkedIn ({t(lang, 'todo')})</span>}
       </div>
     </div>
-    <!-- Photo : remplacer ce bloc par <Image src={photo} alt="..." class="photo" /> -->
-    <div class="photo">{t(lang, 'hero.photo')}</div>
+    <!-- Photo : remplacer ce bloc par <Image src={photo} alt="..." class="photo" />
+         (et retirer "isDev &&"). Sans photo, le bloc n'apparaît qu'en local. -->
+    {isDev && <div class="photo">{t(lang, 'hero.photo')}</div>}
   </div>
 </header>
 
 <style>
   .hero { padding: 96px 0 72px; }
   .hero .wrap { display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: center; }
+  .hero .wrap.solo { grid-template-columns: 1fr; }
   .eyebrow { font: 500 13px var(--mono); color: var(--accent); margin-bottom: 18px; }
   h1 { font: 700 clamp(44px, 7vw, 72px)/1.02 var(--head); letter-spacing: -1.5px; }
   .hl { color: var(--accent); }
