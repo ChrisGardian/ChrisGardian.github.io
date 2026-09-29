@@ -56,13 +56,17 @@ const facts = [
   .facts span::before { content: "● "; color: var(--accent); font-size: 9px; vertical-align: 2px; }
   .facts .todo { color: var(--accent-2); }
   .mail {
-    display: inline-flex; align-items: center; gap: 12px;
-    font: 600 clamp(20px, 3vw, 28px) var(--head); color: var(--text);
-    border-bottom: 2px solid var(--accent); padding-bottom: 4px; word-break: break-all;
+    position: relative; justify-self: start;
+    font: 600 20px var(--head); color: var(--text);
+    border-bottom: 2px solid var(--accent); padding-bottom: 2px;
   }
   a.mail:hover { color: var(--accent); }
   .mail.todo { color: var(--accent-2); border-color: var(--accent-2); }
-  .copied { font: 500 12px var(--mono); color: var(--accent); opacity: 0; transition: opacity .2s; }
+  /* hors du flux : ne rallonge pas le soulignement */
+  .copied {
+    position: absolute; right: 0; bottom: 100%; margin-bottom: 4px;
+    font: 500 12px var(--mono); color: var(--accent); opacity: 0; transition: opacity .2s;
+  }
   :global(.copied.show) { opacity: 1; }
   @media (max-width: 860px) {
     .contact { grid-template-columns: 1fr; }
