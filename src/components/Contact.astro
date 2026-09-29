@@ -7,7 +7,11 @@ const { lang } = Astro.props;
 const isDev = import.meta.env.DEV;
 // Les infos entre crochets [ ] sont à remplacer dans src/i18n/ui.ts
 // (elles restent masquées sur le site publié tant qu'elles ne sont pas remplies).
-const facts = [t(lang, 'contact.location'), t(lang, 'contact.languages'), t(lang, 'contact.availability')]
+const facts = [
+  t(lang, 'contact.location'), 
+  t(lang, 'contact.languages'), 
+  // t(lang, 'contact.availability')
+]
   .filter((f) => isDev || !f.includes('['));
 ---
 <section id="contact">
