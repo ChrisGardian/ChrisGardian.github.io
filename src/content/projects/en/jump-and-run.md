@@ -4,7 +4,7 @@ summary: A time-trial 3D platformer with lasers, lava and a high-score table. Al
 order: 5
 tags: [Unity, C#, Blender]
 cover: ../../../assets/projects/jumprun-cover.jpg
-coverAlt: A laser trap above a platform lit by a street lamp
+coverAlt: In game, a turret laser grazes the player, with the timer and lives at the top of the screen
 facts:
   - label: Context
     value: Game programming course project
@@ -13,6 +13,8 @@ facts:
   - label: Assets
     value: All modeled in Blender
 gallery:
+  - src: ../../../assets/projects/jumprun-laser.jpg
+    alt: Blender render of a laser trap and a street lamp
   - src: ../../../assets/projects/jumprun-blockout.jpg
     alt: Level blockout in Blender
 ---

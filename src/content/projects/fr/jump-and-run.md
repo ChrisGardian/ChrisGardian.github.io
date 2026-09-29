@@ -4,7 +4,7 @@ summary: Platformer 3D contre la montre, avec lasers, lave et tableau des scores
 order: 5
 tags: [Unity, C#, Blender]
 cover: ../../../assets/projects/jumprun-cover.jpg
-coverAlt: Un piège laser au-dessus d'une plateforme éclairée par un lampadaire
+coverAlt: En jeu, un laser de tourelle frôle le joueur, avec le chrono et les vies en haut de l'écran
 facts:
   - label: Contexte
     value: Projet du cours de programmation de jeux
@@ -13,6 +13,8 @@ facts:
   - label: Assets
     value: Tous modélisés dans Blender
 gallery:
+  - src: ../../../assets/projects/jumprun-laser.jpg
+    alt: Rendu Blender d'un piège laser et d'un lampadaire
   - src: ../../../assets/projects/jumprun-blockout.jpg
     alt: Blockout du niveau dans Blender
 ---
