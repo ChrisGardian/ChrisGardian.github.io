@@ -4,7 +4,7 @@ summary: Un client Unreal Engine qui anime en temps réel le visage d'un avatar 
 order: 1
 featured: true
 label: Thèse de Bachelor
-youtubeId: "IKPRpFhvp1k"
+youtubeId: "mfxO03slr0A"
 tags: [Unreal 5.5, C++, MetaHuman, LiveLink]
 cover: ../../../assets/projects/lipsync-cover.jpg
 coverAlt: Ada, avatar MetaHuman, en train de parler dans la scène de démo

@@ -4,7 +4,7 @@ summary: An Unreal Engine client that animates a MetaHuman's face in real time o
 order: 1
 featured: true
 label: Bachelor thesis
-youtubeId: "IKPRpFhvp1k"
+youtubeId: "mfxO03slr0A"
 tags: [Unreal 5.5, C++, MetaHuman, LiveLink]
 cover: ../../../assets/projects/lipsync-cover.jpg
 coverAlt: Ada, a MetaHuman avatar, speaking in the demo scene
