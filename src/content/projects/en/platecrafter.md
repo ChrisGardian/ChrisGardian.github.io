@@ -4,8 +4,8 @@ summary: A web app to design laboratory dilution plates and export them in GeneD
 order: 4
 badge: { text: Client project, tone: blue }
 tags: [Django, Python, Docker]
-cover: ../../../assets/projects/platecrafter-cover.svg
-coverAlt: Illustration of a 96-well plate with a dilution gradient
+cover: ../../../assets/projects/platecrafter-plate.jpg
+coverAlt: A generated 96-well plate, each compound's dilution series shown as a color gradient
 facts:
   - label: Context
     value: Team project for a client
@@ -15,6 +15,15 @@ facts:
     value: Django, Python, Docker
   - label: Contribution
     value: About half of the commits (88 of 166)
+gallery:
+  - src: ../../../assets/projects/platecrafter-columns.jpg
+    alt: Compound import, mapping the spreadsheet's columns to the expected fields
+  - src: ../../../assets/projects/platecrafter-dilution.jpg
+    alt: Configuring the dilution series for a new plate
+  - src: ../../../assets/projects/platecrafter-template.jpg
+    alt: Creating plates from a predefined template
+  - src: ../../../assets/projects/platecrafter-384.jpg
+    alt: A 384-well plate generated from a template
 ---
 
 ## The need

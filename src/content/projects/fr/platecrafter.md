@@ -4,8 +4,8 @@ summary: Application web pour concevoir des plaques de dilution de laboratoire e
 order: 4
 badge: { text: Projet client, tone: blue }
 tags: [Django, Python, Docker]
-cover: ../../../assets/projects/platecrafter-cover.svg
-coverAlt: Illustration d'une plaque de 96 puits avec un dégradé de dilution
+cover: ../../../assets/projects/platecrafter-plate.jpg
+coverAlt: Une plaque de 96 puits générée, chaque série de dilution affichée en dégradé de couleur
 facts:
   - label: Contexte
     value: Projet d'équipe pour un client
@@ -15,6 +15,15 @@ facts:
     value: Django, Python, Docker
   - label: Contribution
     value: Environ la moitié des commits (88 sur 166)
+gallery:
+  - src: ../../../assets/projects/platecrafter-columns.jpg
+    alt: Import des composés, avec l'association des colonnes du tableur aux champs attendus
+  - src: ../../../assets/projects/platecrafter-dilution.jpg
+    alt: Configuration des séries de dilution d'une nouvelle plaque
+  - src: ../../../assets/projects/platecrafter-template.jpg
+    alt: Création de plaques à partir d'un template prédéfini
+  - src: ../../../assets/projects/platecrafter-384.jpg
+    alt: Une plaque de 384 puits générée depuis un template
 ---
 
 ## Le besoin
