@@ -1,7 +1,7 @@
 ---
 title: PlateCrafter
 summary: Application web pour concevoir des plaques de dilution de laboratoire et les exporter au format GeneData. Réalisée en équipe pour un client réel.
-order: 4
+order: 2
 badge: { text: Projet client, tone: blue }
 tags: [Django, Python, Docker]
 cover: ../../../assets/projects/platecrafter-plate.jpg

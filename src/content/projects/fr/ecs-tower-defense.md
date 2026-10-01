@@ -1,7 +1,7 @@
 ---
 title: Tower Defense en ECS
 summary: Étude d'architecture avec Unity DOTS, avec une simulation entièrement en ECS, séparée du rendu.
-order: 3
+order: 4
 badge: { text: En cours, tone: pink }
 tags: [Unity DOTS, ECS, C#]
 cover: ../../../assets/projects/ecs-cover.svg

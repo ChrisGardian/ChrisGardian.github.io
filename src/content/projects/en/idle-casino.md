@@ -1,7 +1,7 @@
 ---
 title: Idle Casino Conquest
 summary: A pixel-art idle/tycoon game about growing a casino. Released on itch.io.
-order: 2
+order: 3
 badge: { text: Playable, tone: green }
 youtubeId: "hkLWN_D1mMY"
 tags: [Unity 6, C#, Pixel art]
