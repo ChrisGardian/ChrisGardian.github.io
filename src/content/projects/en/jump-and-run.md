@@ -2,6 +2,7 @@
 title: 3D Jump & Run
 summary: A time-trial 3D platformer with lasers, lava and a high-score table. All assets modeled in Blender.
 order: 5
+youtubeId: "V_8iXnrxJBA"
 tags: [Unity, C#, Blender]
 cover: ../../../assets/projects/jumprun-cover.jpg
 coverAlt: In game, a turret laser grazes the player, with the timer and lives at the top of the screen

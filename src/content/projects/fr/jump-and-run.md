@@ -2,6 +2,7 @@
 title: Jump & Run 3D
 summary: Platformer 3D contre la montre, avec lasers, lave et tableau des scores. Tous les assets sont modélisés dans Blender.
 order: 5
+youtubeId: "V_8iXnrxJBA"
 tags: [Unity, C#, Blender]
 cover: ../../../assets/projects/jumprun-cover.jpg
 coverAlt: En jeu, un laser de tourelle frôle le joueur, avec le chrono et les vies en haut de l'écran
