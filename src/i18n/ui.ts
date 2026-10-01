@@ -34,6 +34,10 @@ export const ui = {
     'project.videoPlay': 'Lire la vidéo',
     'project.videoTodo': 'Vidéo YouTube à ajouter (youtubeId)',
     'todo': 'à compléter',
+    'lightbox.label': 'Visionneuse d’images',
+    'lightbox.close': 'Fermer',
+    'lightbox.prev': 'Image précédente',
+    'lightbox.next': 'Image suivante',
   },
   en: {
     'meta.description':
@@ -66,6 +70,10 @@ export const ui = {
     'project.videoPlay': 'Play video',
     'project.videoTodo': 'YouTube video to add (youtubeId)',
     'todo': 'to fill in',
+    'lightbox.label': 'Image viewer',
+    'lightbox.close': 'Close',
+    'lightbox.prev': 'Previous image',
+    'lightbox.next': 'Next image',
   },
 } as const;
 

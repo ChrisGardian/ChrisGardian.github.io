@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Lightbox from '../components/Lightbox.astro';
 import { languages, localePath, switchLangPath, t, type Lang } from '../i18n/ui';
 import { site } from '../data/site';
 
@@ -69,6 +70,8 @@ const cv = site.cv[lang];
       </div>
     </div>
   </footer>
+
+  <Lightbox lang={lang} />
 </body>
 </html>
 

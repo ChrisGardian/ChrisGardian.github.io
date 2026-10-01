@@ -1,0 +1,121 @@
+---
+// Visionneuse d'images : tout lien <a data-lightbox="groupe" href="image-grande">
+// s'ouvre en grand par-dessus la page. Les images d'un même groupe s'enchaînent
+// avec les flèches (boutons, clavier ou glissement sur mobile).
+// Sans JavaScript, le lien ouvre simplement l'image.
+import { t, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<dialog class="lb" aria-label={t(lang, 'lightbox.label')}>
+  <button type="button" class="lb-btn lb-close" aria-label={t(lang, 'lightbox.close')}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <button type="button" class="lb-btn lb-prev" aria-label={t(lang, 'lightbox.prev')}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+  </button>
+  <figure class="lb-fig">
+    <img class="lb-img" alt="" />
+    <figcaption><span class="lb-cap"></span><span class="lb-count"></span></figcaption>
+  </figure>
+  <button type="button" class="lb-btn lb-next" aria-label={t(lang, 'lightbox.next')}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+</dialog>
+
+<script>
+  const dlg = document.querySelector<HTMLDialogElement>('dialog.lb');
+  if (dlg) {
+    const img = dlg.querySelector<HTMLImageElement>('.lb-img')!;
+    const cap = dlg.querySelector<HTMLElement>('.lb-cap')!;
+    const count = dlg.querySelector<HTMLElement>('.lb-count')!;
+    const prev = dlg.querySelector<HTMLButtonElement>('.lb-prev')!;
+    const next = dlg.querySelector<HTMLButtonElement>('.lb-next')!;
+    let items: HTMLAnchorElement[] = [];
+    let index = 0;
+    let opener: HTMLElement | null = null;
+
+    const show = (i: number) => {
+      index = (i + items.length) % items.length;
+      const a = items[index];
+      img.src = a.href;
+      img.alt = a.dataset.caption ?? '';
+      cap.textContent = a.dataset.caption ?? '';
+      count.textContent = items.length > 1 ? `${index + 1} / ${items.length}` : '';
+      prev.hidden = next.hidden = items.length < 2;
+    };
+
+    document.addEventListener('click', (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-lightbox]');
+      if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      items = [...document.querySelectorAll<HTMLAnchorElement>(`a[data-lightbox="${a.dataset.lightbox}"]`)];
+      opener = a;
+      show(items.indexOf(a));
+      dlg.showModal();
+    });
+
+    prev.addEventListener('click', () => show(index - 1));
+    next.addEventListener('click', () => show(index + 1));
+    dlg.querySelector('.lb-close')!.addEventListener('click', () => dlg.close());
+    // Clic à côté de l'image (sur le fond) : fermer
+    dlg.addEventListener('click', (e) => {
+      const el = e.target as Element;
+      if (!el.closest('.lb-img, .lb-btn, figcaption')) dlg.close();
+    });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+    // Glissement gauche/droite sur mobile
+    let x0: number | null = null;
+    dlg.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    dlg.addEventListener('touchend', (e) => {
+      if (x0 === null || items.length < 2) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+    dlg.addEventListener('close', () => { img.removeAttribute('src'); opener?.focus(); });
+  }
+</script>
+
+<style>
+  .lb {
+    position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none;
+    margin: 0; padding: 56px 72px; border: 0; background: transparent; color: var(--text);
+    display: none; align-items: center; justify-content: center;
+  }
+  .lb[open] { display: flex; }
+  .lb::backdrop { background: rgba(6, 8, 12, .92); backdrop-filter: blur(4px); }
+  :global(html:has(dialog.lb[open])) { overflow: hidden; }
+
+  .lb-fig { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; min-width: 0; max-height: 100%; margin: 0; }
+  .lb-img {
+    width: auto; height: auto; max-width: 100%; max-height: calc(100vh - 150px); object-fit: contain;
+    border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,.6); background: #0f121a;
+  }
+  figcaption { display: flex; gap: 16px; align-items: baseline; color: var(--muted); font-size: 14.5px; text-align: center; }
+  .lb-count { font: 500 12px var(--mono); color: var(--accent); white-space: nowrap; }
+
+  .lb-btn {
+    position: absolute; width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; cursor: pointer;
+    background: rgba(21,26,36,.85); border: 1px solid var(--line); color: var(--text);
+    transition: border-color .15s, color .15s;
+  }
+  .lb-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .lb-btn svg { width: 20px; height: 20px; }
+  .lb-btn[hidden] { display: none; }
+  .lb-close { top: 16px; right: 16px; }
+  .lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
+  .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
+
+  @media (max-width: 640px) {
+    .lb { padding: 64px 12px 24px; }
+    .lb-prev, .lb-next { top: auto; bottom: 16px; transform: none; }
+    .lb-img { max-height: calc(100vh - 190px); }
+    figcaption { flex-direction: column; gap: 4px; padding: 0 56px; }
+  }
+</style>
